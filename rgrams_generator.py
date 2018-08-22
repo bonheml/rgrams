@@ -10,11 +10,11 @@ https://arxiv.org/abs/1808.04670
 def pairwise(tokens, longest=False):
     """ Generate pairs from a list
     Example :
-        pairwise(['spam', 'bacon', 'eggs'])
-        > [('spam', 'bacon'), ('bacon', 'eggs')]
+        pairwise(["spam", "bacon", "eggs"])
+        > [("spam", "bacon"), ("bacon", "eggs")]
 
-        pairwise(['spam', 'bacon', 'eggs'], True)
-        > [('spam', 'bacon'), ('bacon', 'eggs'), ('eggs', None)]
+        pairwise(["spam", "bacon", "eggs"], True)
+        > [("spam", "bacon"), ("bacon", "eggs"), ("eggs", None)]
     :param tokens: list of tokens to process
     :param longest: boolean value if false use zip, otherwise use zip_longest
     :return: iterable on a list of tuples
@@ -27,8 +27,8 @@ def pairwise(tokens, longest=False):
 def get_most_common_pair(tokens):
     """ Get the most common pair of tokens
     Example:
-        get_most_common_pair(['spam', 'spam', 'eggs', 'spam', 'spam'])
-         > ('spam spam', 2)
+        get_most_common_pair(["spam", "spam", "eggs", "spam", "spam"])
+         > ("spam spam", 2)
     :param tokens: tokens
     :return: a tuple containing the most common token and its frequency
     """
@@ -38,11 +38,11 @@ def get_most_common_pair(tokens):
 
 def concatenate_pair(tokens, pair):
     """
-    Find all the pairs of tokens similar to 'pair' and replace them by
+    Find all the pairs of tokens similar to <pair> and replace them by
     the pair
     Example:
-        concatenate_pair(['spam', 'spam', 'eggs', 'spam', 'spam'], 'spam spam')
-        > ['spam spam', 'eggs', 'spam spam']
+        concatenate_pair(["spam", "spam", "eggs", "spam", "spam"], "spam spam")
+        > ["spam spam", "eggs", "spam spam"]
     :param tokens: list of tokens
     :param pair: pair of tokens to concatenate
     :return: list of token
@@ -50,9 +50,11 @@ def concatenate_pair(tokens, pair):
     pairs = pairwise(tokens, longest=True)
     new_tokens = []
     for p in pairs:
-        current_pair = " ".join(p) if p[1] else p[0]
+        # If p[1] is None (last element of the list), the pair is empty
+        current_pair = ' '.join(p) if p[1] else ''
         if current_pair == pair:
             new_tokens.append(pair)
+            # Skip the next word as we just concatenated it.
             next(pairs, None)
         else:
             new_tokens.append(p[0])
@@ -62,11 +64,11 @@ def concatenate_pair(tokens, pair):
 def generate_rgrams(tokens, min_freq=4, current_iter=0, max_iter=50000):
     """ Generate rgrams using BPE algorithm
     Example:
-        generate_rgrams(['spam', 'spam', 'eggs', 'spam', 'spam'], 2)
-        > ['spam spam', 'eggs', 'spam spam']
+        generate_rgrams(["spam", "spam", "eggs", "spam", "spam"], 2)
+        > ["spam spam", "eggs", "spam spam"]
 
-        generate_rgrams(['spam', 'spam', 'eggs', 'spam', 'spam'], 3)
-        > ['spam', 'spam', 'eggs', 'spam', 'spam']
+        generate_rgrams(["spam", "spam", "eggs", "spam", "spam"], 3)
+        > ["spam", "spam", "eggs", "spam", "spam"]
     :param tokens: list of unigrams
     :param min_freq: minimum frequency of occurrence of the rgram
     :param current_iter: current number of iterations processed
